@@ -14,7 +14,7 @@ def extract():
 
     #Estableciendo conexón tacuba
     conn = mysql.connector.connect(
-    user='root', password='sys', host='10.10.1.101', database='siipapx')
+    user='root', password='sys', host='10.10.5.1', database='siipapx')
 
     #Creando cursor
     cursor = conn.cursor()
@@ -28,7 +28,7 @@ def extract():
             """
 
     #Sentencia SQL ficha
-    sql_cobro_cheque = f"""SELECT cq.* FROM cobro c join cobro_cheque cq on (c.id=cq.cobro_id) where c.fecha='{today}'
+    sql_cobro_cheque = f"""SELECT cq.* FROM cobro c join cobro_cheque cq on (c.id=cq.cobro_id) where c.fecha='{today}' 
                          AND c.forma_de_pago='CHEQUE' 
                          AND c.tipo='CON' 
                          AND c.cliente_id='402880fc5e4ec411015e4ecc5dfc0554'
@@ -36,7 +36,7 @@ def extract():
 
     #Sentencia SQL ficha
     sql_ficha = f"""SELECT f.* FROM cobro c join cobro_cheque cq on (c.id=cq.cobro_id) join ficha f on (f.id=cq.ficha_id) 
-                where c.fecha='{today}' 
+                where c.fecha='{today}'
                 AND c.forma_de_pago='CHEQUE' 
                 AND c.tipo='CON' 
                 AND c.cliente_id='402880fc5e4ec411015e4ecc5dfc0554'
@@ -136,12 +136,11 @@ def load(row_cobro, row_cobro_cheque, row_ficha):
             print("conexión con oficinas Cerrada")
 
 
-with Flow("cobro_cheque_tacuba") as flow:
+with Flow("cobro_cheque_calle4") as flow:
     row_cobro = extract()[0]
     row_cobro_cheque = extract()[1]
     row_ficha = extract()[2]
     load(row_cobro, row_cobro_cheque, row_ficha)
-
 
 flow.register(project_name="Cobro_cheque")
 #flow.run()
